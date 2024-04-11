@@ -44,6 +44,7 @@
             </div>
         </div>
         {{ room.name|json_script:"roomName" }}
+        {{ user.get_username |json_script:"userName" }}
     </div>
     <script>
         let chatSocket = null;
@@ -79,7 +80,6 @@
 
             chatSocket.onmessage = function (e) {
                 const data = JSON.parse(e.data);
-
                 switch (data.type) {
 
                     case "user_list":
@@ -103,8 +103,10 @@
                         chatLog.value += "PM to " + data.target + ": " + data.message + "\n";
                         break;
                     case "chat_message":
-                        console
-                        chatLog.value += data.user + ": " + data.message + "\n";
+                        const username = JSON.parse(document.getElementById('userName').textContent);
+                        const currentUser = (username === data.user) ? "Você" : data.user;
+                        console.log(currentUser)
+                        chatLog.value += currentUser + ": " + data.message + "\n";
                         break;
                 }
                 // scroll 'chatLog' to the bottom
