@@ -26,18 +26,19 @@
         <div class="row">
             <div class="col-12 col-md-8">
                 <div class="mb-2">
-                    <label for="chatLog">Room: #{{ room.name }}</label>
+                    <label for="chatLog">Sala: #{{ room.name }}</label>
+                    <label for="chatLog">USER: {{ user.get_username }}</label>
                     <textarea class="form-control" id="chatLog" readonly></textarea>
                 </div>
                 <div class="input-group">
                     <input type="text" class="form-control" id="chatMessageInput" placeholder="Enter your chat message">
                     <div class="input-group-append">
-                        <button class="btn btn-success" id="chatMessageSend" type="button">Send</button>
+                        <button class="btn btn-success" id="chatMessageSend" type="button">Enviar</button>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-4">
-                <label for="onlineUsers">Online users</label>
+                <label for="onlineUsers">Usuários online agora</label>
                 <select multiple class="form-control" id="onlineUsersSelector">
                 </select>
             </div>
@@ -100,6 +101,10 @@
                         break;
                     case "private_message_delivered":
                         chatLog.value += "PM to " + data.target + ": " + data.message + "\n";
+                        break;
+                    case "chat_message":
+                        console
+                        chatLog.value += data.user + ": " + data.message + "\n";
                         break;
                 }
                 // scroll 'chatLog' to the bottom

@@ -4,7 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from app.models import Room, Message 
-
+from win10toast import ToastNotifier
 
 class ChatConsumer(WebsocketConsumer):
 
@@ -15,6 +15,7 @@ class ChatConsumer(WebsocketConsumer):
         self.room = None
         self.user = None
         self.user_inbox = None 
+        self.toaster = ToastNotifier()
 
     def connect(self):
         
@@ -83,6 +84,7 @@ class ChatConsumer(WebsocketConsumer):
                     'message': target_msg,
                 }
             )
+            # self.toaster.show_toast(title=self.user.username, msg=message, duration=4)
             # send private message delivered to the user
             self.send(json.dumps({
                 'type': 'private_message_delivered',
@@ -90,7 +92,7 @@ class ChatConsumer(WebsocketConsumer):
                 'message': target_msg,
             }))
             return
-        # ---------------- end of new ----------------
+       
 
         # send chat message event to the room
         async_to_sync(self.channel_layer.group_send)(
@@ -101,7 +103,11 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message,
             }
         )
+        
+
         Message.objects.create(user=self.user, room=self.room, content=message)
+
+        # self.toaster.show_toast(title=f'{self.room.name} - {self.user.username}', msg=message)
 
     def chat_message(self, event):
         self.send(text_data=json.dumps(event))
